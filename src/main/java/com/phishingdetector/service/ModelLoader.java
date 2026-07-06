@@ -17,14 +17,13 @@ public class ModelLoader {
         ClassPathResource resource = new ClassPathResource("model/phishing.model");
 
         classifier = (Classifier) SerializationHelper.read(
-                resource.getFile().getAbsolutePath()
+                resource.getInputStream()
         );
 
         System.out.println("=================================");
         System.out.println("Phishing Model Loaded Successfully");
         System.out.println("=================================");
     }
-
     public Classifier getClassifier() {
         return classifier;
     }
