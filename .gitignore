@@ -4,4 +4,3 @@ target/
 .vscode/
 .DS_Store
 *.class
-src/main/resources/model/phishing.model
