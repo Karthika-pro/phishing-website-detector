@@ -20,9 +20,17 @@ public class ModelTrainer {
 
         RandomForest randomForest = new RandomForest();
 
-        randomForest.setNumIterations(100);
+     // Number of trees
+     randomForest.setNumIterations(50);
 
-        randomForest.buildClassifier(data);
+     // Limit tree depth
+     randomForest.setMaxDepth(20);
+
+     // Use 4 CPU cores while training
+     randomForest.setNumExecutionSlots(4);
+
+     // Train the model
+     randomForest.buildClassifier(data);
 
         SerializationHelper.write(
                 "model/phishing.model",
