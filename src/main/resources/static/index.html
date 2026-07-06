@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Phishing Website Detector</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="frame">
+	<!-- ================= ERROR CARD ================= -->
+
+	<div id="errorCard" class="error-card">
+
+	    <div class="error-icon">
+
+	        ❌
+
+	    </div>
+
+	    <div>
+
+	        <div class="error-title">
+
+	            Invalid Request
+
+	        </div>
+
+	        <div
+	                id="errorMessage"
+	                class="error-message">
+
+	        </div>
+
+	    </div>
+
+	    <button
+	            class="close-error"
+	            onclick="closeError()">
+
+	        ✕
+
+	    </button>
+
+	</div>
+    <!-- ================= HEADER ================= -->
+
+    <div class="eyebrow">
+
+        <span class="dot"></span>
+
+        ML MODEL ONLINE · RANDOM FOREST
+
+    </div>
+
+    <div class="header-row">
+
+        <div class="radar">
+
+            <div class="sweep"></div>
+
+            <div class="shield-icon">🛡️</div>
+
+        </div>
+
+        <div>
+
+            <h1>Phishing Website Detector</h1>
+
+            <div class="subtitle">
+
+                Detect suspicious websites using Machine Learning
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= URL INPUT ================= -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <span class="step">1</span>
+
+            Enter Website URL
+
+        </div>
+
+        <div class="input-row">
+
+            <input
+                    id="urlInput"
+                    type="text"
+                    placeholder="https://www.google.com"
+                    autocomplete="off">
+
+        </div>
+
+        <div class="example">
+
+            Example : https://www.google.com
+
+        </div>
+
+        <button
+                id="detectButton"
+                class="analyze">
+
+            <span id="spinner" class="spinner"></span>
+
+            <span id="btnLabel">
+
+                🔍 Analyze Website
+
+            </span>
+
+        </button>
+
+    </div>
+
+    <!-- ================= RESULT ================= -->
+
+    <div
+            id="result"
+            class="result-card">
+
+        <div class="section-title">
+
+            <span class="step">2</span>
+
+            Scan Result
+
+        </div>
+
+        <div class="dashboard">
+
+            <!-- LEFT -->
+
+            <div
+                    id="verdictBadge"
+                    class="verdict-panel">
+
+                <div class="shield-large">
+
+                    🛡️
+
+                </div>
+
+                <div
+                        id="prediction"
+                        class="prediction-title">
+
+                </div>
+
+                <div
+                        id="predictionMessage"
+                        class="prediction-subtitle">
+
+                </div>
+
+                <p class="prediction-desc">
+
+                    This result is generated using Machine Learning
+                    and multiple phishing detection rules.
+
+                </p>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="score-panel">
+
+                <div class="confidence-header">
+
+                    <span>
+
+                        Confidence Score
+
+                    </span>
+
+                    <span id="confidence">
+
+                        0%
+
+                    </span>
+
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                            id="confFill"
+                            class="bar-fill">
+
+                    </div>
+
+                </div>
+
+                <!-- Risk -->
+
+				<div class="risk-box">
+
+				    <div class="circle-wrap">
+
+				        <svg width="170" height="170">
+
+				            <circle
+				                    class="circle-bg"
+				                    cx="85"
+				                    cy="85"
+				                    r="70">
+
+				            </circle>
+
+				            <circle
+				                    id="riskCircle"
+				                    class="circle-progress"
+				                    cx="85"
+				                    cy="85"
+				                    r="70">
+
+				            </circle>
+
+				        </svg>
+
+				        <div class="circle-text">
+
+				            <span id="riskScore">
+
+				                0%
+
+				            </span>
+
+				        </div>
+
+				    </div>
+
+				    <div>
+
+				        <div class="risk-label">
+
+				            Risk Level
+
+				        </div>
+
+				        <div
+				                id="riskLevel"
+				                class="risk-level">
+
+				            LOW RISK
+
+				        </div>
+
+				    </div>
+
+				</div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= DETAILS ================= -->
+
+        <div class="info-grid">
+
+            <!-- Website -->
+
+            <div class="info-card">
+
+                <div class="info-title">
+
+                    🌐 Website Details
+
+                </div>
+
+                <div class="info-item">
+
+                    URL
+
+                </div>
+
+                <div
+                        id="url"
+                        class="info-value">
+
+                </div>
+
+                <div class="info-item">
+
+                    Detection Engine
+
+                </div>
+
+                <div
+                        id="model"
+                        class="info-value">
+
+                </div>
+
+                <div class="info-item">
+
+                    Scan Time
+
+                </div>
+
+                <div
+                        id="time"
+                        class="info-value">
+
+                </div>
+
+            </div>
+
+            <!-- Features -->
+
+            <div class="info-card">
+
+                <div class="info-title">
+
+                    🧠 Detected Features
+
+                </div>
+
+                <ul
+                        id="featureList"
+                        class="feature-list">
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-left">
+
+            <div class="footer-title">
+
+                🛡️ Phishing Website Detector
+
+            </div>
+
+            <div class="footer-sub">
+
+                Stay Safe. Think Before You Click.
+
+            </div>
+
+        </div>
+
+        <div class="footer-right">
+
+            <div>
+
+                Developed by
+
+            </div>
+
+            <strong>
+
+                Karthika
+
+            </strong>
+
+        </div>
+
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

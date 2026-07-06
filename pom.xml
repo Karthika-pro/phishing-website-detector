@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Spring Boot "parent" pom: gives us sensible default versions for every
+         dependency below, so we don't have to pick compatible versions ourselves.
+         This is roughly analogous to how a well-maintained requirements.txt pins
+         versions that are known to work together — except Maven does it for you. -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.phishingdetector</groupId>
+    <artifactId>phishing-detector</artifactId>
+    <version>1.0.0</version>
+    <name>phishing-detector</name>
+    <description>Phishing Website Detection using Machine Learning (Java/Spring Boot port)</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ===== Web layer: gives us @RestController, embedded Tomcat server,
+             JSON serialization, and static file serving from src/main/resources/static
+             This replaces Flask entirely. ===== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ===== Input validation on REST request bodies (e.g. "url must not be blank")
+             Replaces manual `if not url:` checks you'd write in Flask. ===== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ===== Weka: the machine learning engine.
+             This is our scikit-learn replacement — it has Logistic Regression,
+             J48 (Decision Tree), RandomForest, SMO (SVM), AdaBoostM1, IBk (KNN),
+             and Gradient Boosting equivalents, plus built-in train/test split,
+             cross-validation, and an Evaluation class for accuracy/precision/recall. ===== -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+              <artifactId>weka-stable</artifactId>
+    <version>3.8.6</version>
+</dependency>
+
+        <!-- ===== Jsoup: fetches and parses HTML from a live URL.
+             Needed for feature extraction — e.g. checking for iframes, forms,
+             favicons, anchor tags — none of which exist as code in your original
+             notebook since it only read pre-computed CSV columns. ===== -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
+        </dependency>
+
+        <!-- ===== Lombok: eliminates Java's boilerplate getters/setters/constructors.
+             Python doesn't need this (attributes are accessible by default), but
+             plain Java classes normally require a lot of repetitive code. Lombok
+             generates it for us via annotations instead. ===== -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ===== Testing ===== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Packages the app into a single runnable .jar with all dependencies
+                 bundled in — analogous to a PyInstaller bundle, but this is the
+                 normal, expected way to ship a Java app, not a special case. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Explicitly declares Lombok as an annotation processor.
+                 Without this, plain `mvn compile` still works (Maven
+                 auto-detects Lombok on the classpath), but some IDEs/CI
+                 setups resolve annotation processors more strictly. Being
+                 explicit here makes the build deterministic everywhere,
+                 not just "usually works." -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
